@@ -1,0 +1,6 @@
+train <- read.csv("~/Challenge/Titanic/train.csv")
+>   View(train)
+> library(randomForest)
+> train_complete = train[complete.cases(train),]
+> train$survived <- as.factor(train$survived)
+> randomForest(survived ~ train_complete$sex+train_complete$age, train_complete)
