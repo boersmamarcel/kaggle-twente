@@ -1,14 +1,17 @@
 # Assumes that getwd() returns git repository folder
 # Use setwd() to change R working directory if this is not the case
 library("plyr")
+library(ggplot2)
 
 # Load training and test set
-titanic_train <- read.csv("data/internal_validation/internal_train.csv")
-titanic_test  <- read.csv("data/internal_validation/internal_test.csv")
+#titanic_train <- read.csv("C:/Users/Yme/Documents/GitHub/kaggle-twente/data/internal_validation/internal_train.csv")
+#titanic_test  <- read.csv("C:/Users/Yme/Documents/GitHub/kaggle-twente/data/internal_validation/internal_test.csv")
+titanic_train <- read.csv("C:/Users/Yme/Documents/GitHub/kaggle-twente/data/train.csv")
+titanic_test  <- read.csv("C:/Users/Yme/Documents/GitHub/kaggle-twente/data/test.csv")
 train <- data.frame(titanic_train$survived, titanic_train$age, titanic_train$sibsp, titanic_train$parch, titanic_train$fare)
 train <- rename(train, c("titanic_train.survived"="survived","titanic_train.age"="age","titanic_train.sibsp"="sibsp","titanic_train.parch"="parch","titanic_train.fare"="fare"))
-test  <- data.frame(titanic_test$survived, titanic_test$age, titanic_test$sibsp, titanic_test$parch, titanic_test$fare)
-test  <- rename(test, c("titanic_test.survived"="survived","titanic_test.age"="age","titanic_test.sibsp"="sibsp","titanic_test.parch"="parch","titanic_test.fare"="fare"))
+test  <- data.frame(titanic_test$name, titanic_test$age, titanic_test$sibsp, titanic_test$parch, titanic_test$fare)
+test  <- rename(test, c("titanic_test.name"="name","titanic_test.age"="age","titanic_test.sibsp"="sibsp","titanic_test.parch"="parch","titanic_test.fare"="fare"))
 
 # Omit NA's from training and test set
 train <- na.omit(train)
@@ -54,8 +57,14 @@ test$likelihood_1 <- dnorm(test$pca_value, mean = mean(train_1_vec) , sd = sd(tr
 test$posterior_0 <- test$likelihood_0 * prior_0
 test$posterior_1 <- test$likelihood_1 * prior_1
 
+#test$classification <- (test$posterior_1>=test$posterior_0)
 # Calculate classification
-test$classification <- (test$posterior_1>=test$posterior_0)
+if((test$posterior_1>=test$posterior_0) == TRUE){
+  test$classification <- 1
+}
+if((test$posterior_1>=test$posterior_0) == FALSE)
+test$classification <- 0
+}
 
 # Classification counts
 good = 0;
